@@ -55,11 +55,12 @@ def fix_encoding_issues(text):
             text = text.replace(corrupted, correct)
     return text
 
-def parquet_to_dataFrame(path: str, file_name: str):
+def parquet_to_dataFrame(path: str, file_name: str, full_path: bool = False):
+    file_path = f"{path}/{file_name}.parquet" if not full_path else path
     print("Loading Dataframe")
-    if (os.path.exists(f"{path}/{file_name}.parquet")):
+    if (os.path.exists(file_path)):
         print("Lendo arquivo PARQUET")
-        df = pd.read_parquet(f"{path}/{file_name}.parquet")
+        df = pd.read_parquet(file_path)
     
     return df
 

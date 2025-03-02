@@ -41,6 +41,24 @@ def filter_df(df: pd.DataFrame):
     table.build_classification()
     return table.table
 
+def create_compiled_dataframe(dfs: list[pd.DataFrame]) -> pd.DataFrame:
+    columns= ["Team_ID", "Team_Name", "Team_Logo", "Victories", "Defeats",
+                "Draws_With_Goals", "Draws_Without_Goals"]
+    compiled_dataframe = pd.DataFrame(columns = columns)
+
+    for df in dfs:
+        for index, row in df.iterrows():
+            TEAM_ID = row["Team_ID"]
+            if TEAM_ID not in compiled_dataframe['Team_ID'].values:
+                new_entry = {col: row[col] if col in row else 0 for col in columns}
+                compiled_dataframe = pd.concat([compiled_dataframe, pd.DataFrame([new_entry])], ignore_index=True)
+            else:
+                columns_to_update = ["Victories", "Defeats", "Draws_With_Goals", "Draws_Without_Goals"]
+                compiled_dataframe.loc[compiled_dataframe["Team_ID"] == TEAM_ID, columns_to_update] += row[columns_to_update]
+        
+    return compiled_dataframe
+    
+
 if __name__ == "__main__":
     path="data/input"
     file_name = "season_2021.json"

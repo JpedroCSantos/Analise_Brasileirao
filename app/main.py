@@ -1,12 +1,12 @@
 import os
-import sys
-import json
 import pandas as pd
+import glob
 
+from pathlib import Path
 from dotenv import load_dotenv
 from api.consult import FootballAPI
-from pipeline.extract import read_file, json_to_dataFrame
-from pipeline.transform import filter_df
+from pipeline.extract import read_file, json_to_dataFrame, parquet_to_dataFrame
+from pipeline.transform import filter_df, create_compiled_dataframe
 from pipeline.load import load_files
 
 
@@ -19,7 +19,7 @@ FINAL_FILE_NAME     = "SEASON_RESULTS"
 
 PARAMS = {
     "CONSULT_API": False,
-    "READ_FILE": True,
+    "READ_FILE": False,
 }
 
 if PARAMS['CONSULT_API']:
@@ -47,6 +47,8 @@ if PARAMS['CONSULT_API']:
 
 elif PARAMS['READ_FILE']:
     seasons = ['2021', '2022', '2023']
+    dfs = []
+
     for season in seasons:
         json_content = read_file(
             path="data/input", 
@@ -55,4 +57,8 @@ elif PARAMS['READ_FILE']:
         )
         df = json_to_dataFrame(json_content["response"], encoding=True)
         df = filter_df(df)
+        dfs.append(df)
         load_files(df, FINAL_PATH, f"{season}_SEASON_RESULTS")
+        
+    compiled_df = create_compiled_dataframe(dfs)
+    load_files(compiled_df, FINAL_PATH, "COMPILED_TEAMS_RESULTS")
