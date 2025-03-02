@@ -6,10 +6,7 @@ sys.path.append(project_root)
 
 import json
 import requests
-# import pandas as pd
-from datetime import datetime
-from typing import Dict, List, Union
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+from typing import Dict
 
 from api.classes.consult_class import ConsultApi
 
@@ -117,9 +114,6 @@ if __name__ == "__main__":
     import sys
     from dotenv import load_dotenv
 
-    # project_root = 'C:/Users/JPedr/OneDrive/Documentos/TCC/Projeto_2'
-    # sys.path.append(project_root)
-
     load_dotenv(dotenv_path="env/.env")
     api_key = os.getenv("api_football_key")
     football_api = FootballAPI(api_key)
@@ -128,8 +122,8 @@ if __name__ == "__main__":
     SEASONS = ['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019',
                '2020', '2021', '2022', '2023', '2024']
     end_point = "fixtures"
-    # end_point = "status"
 
+    football_api.getStatus()
     for season in SEASONS:
         params = {
             'league': BRASILEIRAO_LIGA_ID,
@@ -137,4 +131,3 @@ if __name__ == "__main__":
         }
 
         football_api.search(params = params, endpoint = end_point)
-        # print (response)

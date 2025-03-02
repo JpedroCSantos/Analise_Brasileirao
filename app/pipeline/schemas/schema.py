@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class ApiSchema(BaseModel):
+class TableSchema(BaseModel):
 
     class Config:
         from_attributes = True

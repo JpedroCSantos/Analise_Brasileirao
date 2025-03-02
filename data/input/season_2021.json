@@ -1,21 +1,4 @@
 {
-    "endpoint": "fixtures",
-    "params": {
-        "league": 71,
-        "season": "2021"
-    },
-    "response": {
-        "get": "fixtures",
-        "parameters": {
-            "league": "71",
-            "season": "2021"
-        },
-        "errors": [],
-        "results": 380,
-        "paging": {
-            "current": 1,
-            "total": 1
-        },
         "response": [
             {
                 "fixture": {
@@ -26619,4 +26602,3 @@
             }
         ]
     }
-}

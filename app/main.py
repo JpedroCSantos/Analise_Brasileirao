@@ -1,19 +1,25 @@
 import os
 import sys
 import json
+import pandas as pd
 
 from dotenv import load_dotenv
 from api.consult import FootballAPI
+from pipeline.extract import read_file
+from pipeline.transform import json_to_dataFrame, filter_df
+from pipeline.load import load_files
+
 
 load_dotenv(dotenv_path="env/.env")
-INPUT_DATA_PATH     = "data/input/bilheteria-diaria-obras-por-exibidoras-csv"
+INPUT_DATA_PATH     = "data/input/"
 DATA_PATH           = "data/output"
-FINAL_PATH          = f"{DATA_PATH}/DATAS/FINAL_DATABASE"
-TEMP_PARQUET_FILE   = f"{DATA_PATH}/Backup/TEMP_DATAFRAME.parquet"
-FINAL_FILE_NAME     = "MOVIES"
+FINAL_PATH          = f"{DATA_PATH}"
+TEMP_PARQUET_FILE   = f"{DATA_PATH}/TEMP_DATAFRAME.parquet"
+FINAL_FILE_NAME     = "SEASON_RESULTS"
 
 PARAMS = {
     "CONSULT_API": False,
+    "READ_FILE": True,
 }
 
 if PARAMS['CONSULT_API']:
@@ -27,6 +33,7 @@ if PARAMS['CONSULT_API']:
     SEASONS = ['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019',
             '2020', '2021', '2022', '2023', '2024']
     end_point = "fixtures"
+    data_frames= []
 
     for season in SEASONS:
         params = {
@@ -34,14 +41,13 @@ if PARAMS['CONSULT_API']:
             'season': season
         }
 
-        football_api.search(params = params, endpoint = end_point)
+        data_frames.append(
+            json_to_dataFrame(football_api.search(params = params, endpoint = end_point))
+        )
 
-
-if os.path.exists("data/input/season_2021.json"):
-    with open("data/input/season_2021.json", "r") as f:
-        try:
-            data = json.load(f)
-        except json.JSONDecodeError:
-            data = []
-
-print(len(data['response']['response']))
+elif PARAMS['READ_FILE']:
+    json_content = read_file(path="data/input", file_name = "season_2021.json", encoding=True)
+    
+df = json_to_dataFrame(json_content["response"], encoding=True)
+df = filter_df(df)
+load_files(df, FINAL_PATH, FINAL_FILE_NAME)
