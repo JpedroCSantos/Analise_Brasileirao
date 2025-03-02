@@ -1,14 +1,17 @@
-import sys
 import os
+import sys
 
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(project_root)
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "pipeline")))
 
 from schemas.schema import TableSchema
 from typing import Optional
 
+
 class ChampionshipSchema(TableSchema):
     Position: int
+    Position_1: int
+    Position_2: int
     Team_Name: str
     Team_ID: int
     Team_Logo: Optional[str]
@@ -19,8 +22,9 @@ class ChampionshipSchema(TableSchema):
     Score_Normal: int
     Score_Type1: int
     Score_Type2: int
-    Position_1: int
-    Position_2: int
+    Pro_goals: int
+    Own_goals: int
+    Goals_difference: int
     Variation_1: float
     Variation_2: float
     Position_Variation_1: float
