@@ -13,6 +13,10 @@ __pycache__/
 response.json
 params_consult.txt
 
+data/input/Backup
+data/output/Backup
+images/
+
 #Pre-commit
 .pre-commit-config.yaml
 
