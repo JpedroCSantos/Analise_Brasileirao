@@ -1,11 +1,13 @@
-import pandas as pd
 import os
 import sys
+import pandas as pd
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
 
 from typing import Dict
+
+
 try:
     from pipeline.classes.table_class import Table
     from pipeline.schemas.table_schema import ChampionshipSchema
@@ -46,7 +48,7 @@ class Championship_Table(Table):
                 data["Team_ID"]= row[f"{TEAM_KEY}.id"]
                 data["Team_Name"]= row[f"{TEAM_KEY}.name"]
                 data["Team_Logo"]= row[f"{TEAM_KEY}.logo"]
-                
+
                 self.table.loc[len(self.table)] = data
             TEAMS_ID[key] = TEAM_ID
         

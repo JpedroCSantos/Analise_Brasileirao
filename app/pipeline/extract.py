@@ -33,7 +33,7 @@ def json_to_dataFrame(json_content: json, encoding: bool =False) -> pd.DataFrame
     """
     content = json_content
     if isinstance(content, list):
-        df = pd.json_normalize(content)  # Normaliza toda a lista de objetos JSON
+        df = pd.json_normalize(content)
     else:
         df = pd.json_normalize([content])
 

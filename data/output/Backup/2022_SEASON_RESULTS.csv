@@ -1,0 +1,21 @@
+Position;Position_1;Position_2;Team_Name;Team_ID;Team_Logo;Victories;Draws_With_Goals;Draws_Without_Goals;Defeats;Score_Normal;Score_Type1;Score_Type2;Pro_goals;Own_goals;Goals_difference;Variation_1;Variation_2;Position_Variation_1;Position_Variation_2
+1;1;1;Palmeiras;121;https://media.api-sports.io/football/teams/121.png;23;8;4;3;81;77;89;66;27;39;-0.04938271604938271;0.09876543209876543;0;0
+2;2;2;Internacional;119;https://media.api-sports.io/football/teams/119.png;20;9;4;5;73;69;82;58;31;27;-0.0547945205479452;0.1232876712328767;0;0
+3;3;3;Fluminense;124;https://media.api-sports.io/football/teams/124.png;21;5;2;10;70;68;75;63;41;22;-0.02857142857142857;0.07142857142857142;0;0
+4;4;4;Corinthians;131;https://media.api-sports.io/football/teams/131.png;18;9;2;9;65;63;74;44;36;8;-0.03076923076923077;0.13846153846153847;0;0
+5;5;5;Flamengo;127;https://media.api-sports.io/football/teams/127.png;18;6;2;12;62;60;68;60;39;21;-0.03225806451612903;0.0967741935483871;0;0
+7;7;6;Atletico-MG;1062;https://media.api-sports.io/football/teams/1062.png;15;8;5;10;58;53;66;45;37;8;-0.08620689655172414;0.13793103448275862;0;1
+9;11;7;Sao Paulo;126;https://media.api-sports.io/football/teams/126.png;13;12;3;10;54;51;66;55;42;13;-0.05555555555555555;0.2222222222222222;-2;2
+6;6;8;Atletico Paranaense;134;https://media.api-sports.io/football/teams/134.png;16;7;3;12;58;55;65;48;48;0;-0.05172413793103448;0.1206896551724138;0;-2
+8;8;9;Fortaleza EC;154;https://media.api-sports.io/football/teams/154.png;15;6;4;13;55;51;61;46;39;7;-0.07272727272727272;0.10909090909090909;0;-1
+10;9;10;America Mineiro;125;https://media.api-sports.io/football/teams/125.png;15;6;2;15;53;51;59;40;40;0;-0.03773584905660377;0.11320754716981132;1;0
+11;10;11;Botafogo;120;https://media.api-sports.io/football/teams/120.png;15;6;2;15;53;51;59;41;43;-2;-0.03773584905660377;0.11320754716981132;1;0
+13;12;12;Goias;151;https://media.api-sports.io/football/teams/151.png;11;11;2;14;46;44;57;40;53;-13;-0.043478260869565216;0.2391304347826087;1;1
+14;13;13;RB Bragantino;794;https://media.api-sports.io/football/teams/794.png;11;10;1;16;44;43;54;49;59;-10;-0.022727272727272728;0.22727272727272727;1;1
+12;14;14;Santos;128;https://media.api-sports.io/football/teams/128.png;12;6;5;15;47;42;53;44;41;3;-0.10638297872340426;0.1276595744680851;-2;-2
+16;16;15;Cuiaba;1193;https://media.api-sports.io/football/teams/1193.png;10;9;2;17;41;39;50;31;42;-11;-0.04878048780487805;0.21951219512195122;0;1
+15;15;16;Coritiba;147;https://media.api-sports.io/football/teams/147.png;12;6;0;20;42;42;48;39;60;-21;0.0;0.14285714285714285;0;-1
+17;19;17;Ceara;129;https://media.api-sports.io/football/teams/129.png;7;11;5;15;37;32;48;34;41;-7;-0.13513513513513514;0.2972972972972973;-2;0
+18;17;18;Atletico Goianiense;144;https://media.api-sports.io/football/teams/144.png;8;11;1;18;36;35;47;39;57;-18;-0.027777777777777776;0.3055555555555556;1;0
+19;18;19;Avai;145;https://media.api-sports.io/football/teams/145.png;9;7;1;21;35;34;42;34;60;-26;-0.02857142857142857;0.2;1;0
+20;20;20;Juventude;152;https://media.api-sports.io/football/teams/152.png;3;11;2;22;22;20;33;29;69;-40;-0.09090909090909091;0.5;0;0

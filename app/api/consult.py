@@ -13,7 +13,7 @@ from api.classes.consult_class import ConsultApi
 class FootballAPI(ConsultApi):
     def __init__(self, api_key: str):
         self.api_key = api_key
-        self.response_file = "response.json"
+        self.response_file = "data/input/response.json"
         
     def search(self, params: Dict, endpoint: str) -> json:
         """
