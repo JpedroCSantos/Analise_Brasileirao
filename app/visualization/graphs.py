@@ -1,6 +1,7 @@
 import mplcursors
 import pandas as pd
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 from PIL import Image
@@ -65,7 +66,7 @@ def generate_wordcloud(df):
             - "Draws_Without_Goals": Número de empates sem gols
     """
     # Criando um dicionário com os times e a quantidade de empates sem gols
-    word_freq = {row["Team_Name"]: row["Draws_Without_Goals"] for _, row in df.iterrows()}
+    word_freq = {row["Team_Name"]: row["Percent_Draws_Without_Goals"] for _, row in df.iterrows()}
 
     # Criando a nuvem de palavras
     wordcloud = WordCloud(width=800, height=400, background_color="black", colormap="viridis",
@@ -77,6 +78,50 @@ def generate_wordcloud(df):
     plt.axis("off")
     plt.title("Empates Sem Gols por Time (Tamanho proporcional ao número de empates)")
     plt.show()
+
+def generate_table(df):
+    """
+    Gera uma tabela formatada no estilo do Brasileirão, destacando as variações de posição e pontuação.
+
+    Parâmetros:
+        df (pd.DataFrame): DataFrame contendo as colunas:
+            - "Position"
+            - "Position_1"
+            - "Position_2"
+            - "Team_Name"
+            - "Victories"
+            - "Draws_With_Goals"
+            - "Draws_Without_Goals"
+            - "Defeats"
+            - "Score_Normal"
+            - "Score_Type1"
+            - "Score_Type2"
+            - "Variation_1"
+            - "Variation_2"
+            - "Position_Variation_1"
+            - "Position_Variation_2"
+    """
+    # Criar uma função para colorir células com base na variação de posição
+    def color_positions(val):
+        if val > 0:
+            color = f"rgba(0, 200, 0, {min(val / 10, 1)})"  # Verde crescente
+        elif val < 0:
+            color = f"rgba(200, 0, 0, {min(abs(val) / 10, 1)})"  # Vermelho crescente
+        else:
+            color = "white"
+        return f"background-color: {color}"
+
+    # Criar uma função para colorir células com base nos Scores e Variações
+    def color_scores(val):
+        min_val, max_val = df["Score_Normal"].min(), df["Score_Normal"].max()
+        norm_val = (val - min_val) / (max_val - min_val) if max_val > min_val else 0
+        return f"background-color: rgba(0, 0, 255, {norm_val})"  # Azul crescente
+
+    # Aplicar estilos à tabela
+    styled_table = df.style.applymap(color_positions, subset=["Position_1", "Position_2", "Position_Variation_1", "Position_Variation_2"]) \
+                            .applymap(color_scores, subset=["Score_Normal", "Score_Type1", "Score_Type2", "Variation_1", "Variation_2"])
+
+    styled_table
 
 def buildGraphs(df):
     """
@@ -92,7 +137,6 @@ def buildGraphs(df):
     """
     buildBubbleGraph(df)
     generate_wordcloud(df)
-
 
 if __name__ == "__main__":
     df = pd.read_parquet("data/output/COMPILED_TEAMS_RESULTS.parquet")
