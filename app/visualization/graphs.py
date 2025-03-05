@@ -1,41 +1,99 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import mplcursors
 import pandas as pd
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+import numpy as np
+import matplotlib.pyplot as plt
+
 from PIL import Image
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+from wordcloud import WordCloud
 
-# Exemplo de dataframe com dados fictícios
-data = {
-    "Team_Name": ["Time A", "Time B", "Time C", "Time D"],
-    "Victories": [10, 15, 8, 12],  # Eixo X
-    "Goals_difference": [5, 10, -3, 7],  # Eixo Y
-    "Bubble_Size": [500, 800, 400, 600],  # Tamanho das bolhas
-    "Team_Logo": ["time_a.png", "time_b.png", "time_c.png", "time_d.png"]  # Caminho das imagens
-}
 
-df = pd.DataFrame(data)
+def buildBubbleGraph(df):
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-# Criando a figura
-fig, ax = plt.subplots(figsize=(8, 6))
+    # Normalizar os tamanhos das bolhas com base nos empates sem gols
+    bubble_sizes = df["Draws_Without_Goals"] * 200
 
-# Criando bolhas no gráfico
-scatter = ax.scatter(df["Victories"], df["Goals_difference"], s=df["Bubble_Size"], alpha=0.5, color="lightblue")
+    # Criar o gráfico de bolhas
+    scatter = ax.scatter(df["Victories"], df["Defeats"], s=bubble_sizes, alpha=0.5, color="blue")
 
-# Função para carregar e redimensionar imagens
-def get_image(path, zoom=0.1):
-    img = Image.open(path)
-    return OffsetImage(img, zoom=zoom)
+    # Adicionar logos dos times a partir de arquivos locais
+    for _, row in df.iterrows():
+        try:
+            img = Image.open(row["Logo_File"])
+            img = img.resize((30, 30), Image.LANCZOS)  # Redimensionar a imagem
 
-# Adicionando imagens dentro das bolhas
-for i, row in df.iterrows():
-    image = get_image(row["Team_Logo"], zoom=0.2)  # Ajuste o zoom conforme necessário
-    ab = AnnotationBbox(image, (row["Victories"], row["Goals_difference"]), frameon=False)
-    ax.add_artist(ab)
+            # Adicionar a imagem corretamente como anotação no gráfico
+            imagebox = OffsetImage(img, zoom=0.5)
+            ab = AnnotationBbox(imagebox, (row["Victories"], row["Defeats"]), frameon=False)
+            ax.add_artist(ab)
+        except Exception as e:
+            print(f"Erro ao carregar imagem para {row['Team_Name']}: {e}")
 
-# Ajustes visuais
-ax.set_xlabel("Vitórias")
-ax.set_ylabel("Saldo de Gols")
-ax.set_title("Gráfico de Bolhas com Logos dos Times")
+    # Configurar rótulos e título
+    ax.set_xlabel("Vitórias")
+    ax.set_ylabel("Derrotas")
+    ax.set_title("Número de Empates Sem Gols por Equipe")
 
-plt.grid(True, linestyle="--", alpha=0.5)
-plt.show()
+    # Adicionar interatividade: exibir informações ao passar o mouse sobre as bolhas
+    cursor = mplcursors.cursor(scatter, hover=True)
+
+    @cursor.connect("add")
+    def on_hover(sel):
+        index = sel.index
+        team = df.iloc[index]
+        sel.annotation.set_text(
+            f"{team['Team_Name']}\n"
+            f"Vitórias: {team['Victories']}\n"
+            f"Derrotas: {team['Defeats']}\n"
+            f"Empates com gols: {team['Draws_With_Goals']}\n"
+            f"Empates sem gols: {team['Draws_Without_Goals']}"
+        )
+        sel.annotation.get_bbox_patch().set(fc="white", alpha=0.8)  # Fundo branco semitransparente
+
+    # Exibir o gráfico
+    plt.show()
+
+def generate_wordcloud(df):
+    """
+    Gera um gráfico de nuvem de palavras onde o tamanho do nome do time
+    é proporcional ao número de empates sem gols.
+
+    Parâmetros:
+        df (pd.DataFrame): DataFrame contendo os dados das equipes. Deve conter as colunas:
+            - "Team_Name": Nome do time
+            - "Draws_Without_Goals": Número de empates sem gols
+    """
+    # Criando um dicionário com os times e a quantidade de empates sem gols
+    word_freq = {row["Team_Name"]: row["Draws_Without_Goals"] for _, row in df.iterrows()}
+
+    # Criando a nuvem de palavras
+    wordcloud = WordCloud(width=800, height=400, background_color="black", colormap="viridis",
+                          normalize_plurals=True).generate_from_frequencies(word_freq)
+
+    # Exibir a nuvem de palavras
+    plt.figure(figsize=(12, 6))
+    plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis("off")
+    plt.title("Empates Sem Gols por Time (Tamanho proporcional ao número de empates)")
+    plt.show()
+
+def buildGraphs(df):
+    """
+    Gera um gráfico de bolhas com os logos dos times e exibe informações ao passar o mouse sobre as bolhas.
+
+    Parâmetros:
+        df (pd.DataFrame): DataFrame contendo os dados das equipes. Deve conter as colunas:
+            - "Victories": Número de vitórias
+            - "Defeats": Número de derrotas
+            - "Draws_With_Goals": Número de empates com gols
+            - "Draws_Without_Goals": Número de empates sem gols
+            - "Logo_File": Caminho local para o logo do time
+    """
+    buildBubbleGraph(df)
+    generate_wordcloud(df)
+
+
+if __name__ == "__main__":
+    df = pd.read_parquet("data/output/COMPILED_TEAMS_RESULTS.parquet")
+    buildGraphs(df)

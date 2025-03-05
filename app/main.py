@@ -5,9 +5,10 @@ import glob
 from pathlib import Path
 from dotenv import load_dotenv
 from api.consult import FootballAPI
-from pipeline.extract import read_file
-from pipeline.transform import build_dataframe, create_compiled_dataframe
+from pipeline.extract import read_file, parquet_to_dataFrame
+from pipeline.transform import build_dataframe, create_compiled_dataframe, getLogoPath, getStatisticsData
 from pipeline.load import load_files
+from visualization.graphs import buildGraphs
 
 
 load_dotenv(dotenv_path="env/.env")
@@ -18,7 +19,7 @@ TEMP_PARQUET_FILE   = f"{DATA_PATH}/TEMP_DATAFRAME.parquet"
 FINAL_FILE_NAME     = "SEASON_RESULTS"
 
 PARAMS = {
-    "CONSULT_API": True,
+    "CONSULT_API": False,
     "READ_FILE": False,
     "BUILD_VIZUALISATION": True
 }
@@ -62,5 +63,15 @@ if any(PARAMS.values()):
             data_frames.append(df_season)
             load_files(df_season, FINAL_PATH, f"{season}_SEASON_RESULTS")
 
-    compiled_df = create_compiled_dataframe(data_frames)
-    load_files(compiled_df, FINAL_PATH, "COMPILED_TEAMS_RESULTS")
+    if PARAMS['CONSULT_API'] or PARAMS['READ_FILE']:
+        compiled_df = create_compiled_dataframe(data_frames)
+        load_files(compiled_df, FINAL_PATH, "COMPILED_TEAMS_RESULTS")
+    
+    if PARAMS['BUILD_VIZUALISATION']:
+        if not 'df' in locals() or not compiled_df:
+            compiled_df = parquet_to_dataFrame("data/output/COMPILED_TEAMS_RESULTS.parquet", "", True)
+        
+        compiled_df = getStatisticsData(compiled_df)
+        compiled_df = getLogoPath(compiled_df)
+        # print(compiled_df)
+        buildGraphs(compiled_df)

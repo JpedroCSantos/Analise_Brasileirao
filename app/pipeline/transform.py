@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import glob
 import requests
 import pandas as pd
 
@@ -103,6 +104,34 @@ def getLogo(row: Dict):
         print(f"Erro ao baixar a imagem: {e}")
     except Exception as e:
         print(f"Erro ao processar a imagem: {e}")
+
+def getLogoPath(df: pd.DataFrame) -> pd.DataFrame:
+    ERROS = []
+    for index, row in df.iterrows():
+        TEAM_ID = row["Team_ID"]
+        TEAM_NAME = row["Team_Name"]
+        try:
+            [LOGO] = glob.glob(f"images/{TEAM_ID}.png")  # Busca a logo na pasta 'images/'            
+            if not LOGO:
+                raise FileNotFoundError
+            
+            df.loc[index, 'Logo_File'] = LOGO
+        except FileNotFoundError:
+            ERROS.append(f"A logo do time {TEAM_NAME} com o ID: {TEAM_ID} não foi encontrada")
+    
+    if ERROS and len(ERROS):
+        print(ERROS)
+
+    return df
+
+def getStatisticsData(df: pd.DataFrame) -> pd.DataFrame:
+    for index, row in df.iterrows():
+        TOTAL_GAMES = row['Victories'] + row['Defeats'] + row['Draws_With_Goals'] + row['Draws_Without_Goals']        
+
+        df.loc[index, 'N_de_partidas'] = TOTAL_GAMES
+        df.loc[index, 'Percent_Draws_Without_Goals'] = (row['Draws_Without_Goals'] / TOTAL_GAMES) * 100
+    
+    return df
 
 if __name__ == "__main__":
     path="data/input"
